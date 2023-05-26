@@ -3,7 +3,8 @@ import NotFound from './pages/NotFound';
 import User from './pages/Users/User';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Login from './pages/Login/Login';
-import Operations from './pages/Operations/Operations';
+import Operation from './pages/Operations/CreateOperation';
+import OperationsRecords from './pages/Operations/OperationRecords';
 
 export function App() {
   return (
@@ -11,7 +12,8 @@ export function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/user" element={<User />} />
-      <Route path="/operations" element={<Operations />} />
+      <Route path="/operation/create" element={<Operation />} />
+      <Route path="/operation/listAll" element={<OperationsRecords />} />
       <Route path="/" element={<Dashboard />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
