@@ -1,11 +1,18 @@
-import { HashRouter, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './pages/NotFound';
+import User from './pages/User';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Operations from './pages/Operations';
 
 export function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/user" element={<User />} />
+      <Route path="/operations" element={<Operations />} />
+      <Route path="/" element={<Dashboard />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -13,8 +20,8 @@ export function App() {
 
 export function WrappedApp() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <App />
-    </HashRouter>
+    </BrowserRouter>
   );
 }
