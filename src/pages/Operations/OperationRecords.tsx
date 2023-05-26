@@ -3,73 +3,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import ContainerLayout from '../../components/Layouts/ContainerLayout';
 import { Typography } from '@mui/material';
-
-type Record = {
-  id: number;
-  operation: string;
-  user: string;
-  amount: number;
-  operationResponse: string;
-  date: Date;
-  isDeleted: boolean;
-};
-
-const sampleRecords: Record[] = [
-  {
-    id: 1,
-    operation: 'ADDITION',
-    user: 'Franklin',
-    amount: 50,
-    operationResponse: 'SUCCESS',
-    date: new Date(),
-    isDeleted: false,
-  },
-  {
-    id: 2,
-    operation: 'SUBTRACTION',
-    user: 'Jose',
-    amount: 30,
-    operationResponse: 'SUCCESS',
-    date: new Date(),
-    isDeleted: false,
-  },
-  {
-    id: 3,
-    operation: 'SUBTRACTION',
-    user: 'Jose',
-    amount: 30,
-    operationResponse: 'SUCCESS',
-    date: new Date(),
-    isDeleted: false,
-  },
-  {
-    id: 4,
-    operation: 'SUBTRACTION',
-    user: 'Jose',
-    amount: 30,
-    operationResponse: 'SUCCESS',
-    date: new Date(),
-    isDeleted: false,
-  },
-  {
-    id: 5,
-    operation: 'SUBTRACTION',
-    user: 'Jose',
-    amount: 30,
-    operationResponse: 'SUCCESS',
-    date: new Date(),
-    isDeleted: false,
-  },
-  {
-    id: 6,
-    operation: 'SUBTRACTION',
-    user: 'Jose',
-    amount: 30,
-    operationResponse: 'SUCCESS',
-    date: new Date(),
-    isDeleted: false,
-  },
-];
+import { Record } from '../../types/RecordTypes';
+import { sampleRecords } from '../../mocks/mocks';
 
 async function fetchRecords(): Promise<Record[]> {
   // TODO Call  API and return the records.
