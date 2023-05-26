@@ -13,20 +13,8 @@ import {
 } from '@mui/material';
 import ContainerLayout from '../../components/Layouts/ContainerLayout';
 import BodyLayout from '../../components/Layouts/BodyLayout';
-
-interface OperationData {
-  userId: number;
-  num1: number;
-  num2: number;
-}
-
-interface OperationResult {
-  id: number;
-  operationType: string;
-  operationResult: number;
-  operationCost: number;
-  userRemainingBalance: number;
-}
+import { OperationData, OperationResult } from '../../types/RecordTypes';
+import { sampleOperationResult } from '../../mocks/mocks';
 
 const Operation: React.FC = () => {
   const [operationData, setOperationData] = useState<OperationData>({
@@ -34,8 +22,10 @@ const Operation: React.FC = () => {
     num1: 0,
     num2: 0,
   });
+
   const [operationResult, setOperationResult] =
-    useState<OperationResult | null>(100);
+    useState<OperationResult | null>(sampleOperationResult);
+
   const [operationType, setOperationType] = useState('Addition');
   const [showAlert, setShowAlert] = useState(true); // TODO change to false, after implementation
   const num1Ref = useRef<HTMLInputElement | null>(null);
@@ -84,7 +74,7 @@ const Operation: React.FC = () => {
             User:{'Franklin Castillo '}
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
-            Remaining Balance:{' $100 '}
+            Remaining Balance:{' $'}
             {operationResult ? operationResult.userRemainingBalance : 'N/A'}
           </Typography>
         </Box>
