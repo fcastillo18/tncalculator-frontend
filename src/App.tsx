@@ -3,7 +3,7 @@ import NotFound from './pages/NotFound';
 import User from './pages/Users/User';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Login from './pages/Login/Login';
-import Operation from './pages/Operations/CreateOperation';
+import CreateOperation from './pages/Operations/CreateOperation';
 import OperationsRecords from './pages/Operations/OperationRecords';
 
 export function App() {
@@ -12,7 +12,7 @@ export function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/user" element={<User />} />
-      <Route path="/operation/create" element={<Operation />} />
+      <Route path="/operation/create" element={<CreateOperation />} />
       <Route path="/operation/listAll" element={<OperationsRecords />} />
       <Route path="/" element={<Dashboard />} />
       <Route path="*" element={<NotFound />} />

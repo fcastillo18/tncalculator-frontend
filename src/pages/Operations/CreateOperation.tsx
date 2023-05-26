@@ -16,7 +16,7 @@ import BodyLayout from '../../components/Layouts/BodyLayout';
 import { OperationData, OperationResult } from '../../types/RecordTypes';
 import { sampleOperationResult } from '../../mocks/mocks';
 
-const Operation: React.FC = () => {
+const CreateOperation: React.FC = () => {
   const [operationData, setOperationData] = useState<OperationData>({
     userId: 2,
     num1: 0,
@@ -82,10 +82,10 @@ const Operation: React.FC = () => {
         <FormControl variant="outlined" fullWidth margin="normal">
           <InputLabel id="operation-type-label">Operation</InputLabel>
           <Select
-            labelId="operation-type-label"
+            data-testid="operation-type-id"
             value={operationType as unknown as { value: unknown }}
             onChange={handleOperationTypeChange}
-            label="Operation"
+            label="Operation Type"
           >
             <MenuItem value={'Addition'}>Addition</MenuItem>
             <MenuItem value={'Subtraction'}>Subtraction</MenuItem>
@@ -126,7 +126,7 @@ const Operation: React.FC = () => {
         </FormControl>
 
         <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit
+          Calculate
         </Button>
 
         {showAlert && operationResult && (
@@ -143,4 +143,4 @@ const Operation: React.FC = () => {
   );
 };
 
-export default Operation;
+export default CreateOperation;
