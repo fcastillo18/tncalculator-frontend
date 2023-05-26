@@ -17,11 +17,7 @@ const containerStyles = {
 const ContainerLayout: FC<BodyContainerProps> = ({ children }) => {
   return (
     <Container maxWidth="lg" sx={containerStyles}>
-      <Grid container justifyContent="center">
-        <Grid item xs={12} sm={10} md={8} lg={6}>
-          <Box p={2}>{children}</Box>
-        </Grid>
-      </Grid>
+      {children}
     </Container>
   );
 };
