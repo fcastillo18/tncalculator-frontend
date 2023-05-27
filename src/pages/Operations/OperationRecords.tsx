@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import ContainerLayout from '../../components/Layouts/ContainerLayout';
 import { Typography } from '@mui/material';
 import { Record } from '../../types/RecordTypes';
-import { sampleRecords } from '../../mocks/mocks';
+import { sampleOperationRecords } from '../../mocks/mocks';
 
 async function fetchRecords(): Promise<Record[]> {
   // TODO Call  API and return the records.
-  return sampleRecords;
+  return sampleOperationRecords;
 }
 
 const columns = [

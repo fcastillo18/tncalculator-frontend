@@ -2,12 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import OperationsRecords from '../OperationRecords';
-import { sampleRecords } from '../../../mocks/mocks';
+import { sampleOperationRecords } from '../../../mocks/mocks';
 
 // TODO this can be refactored to a helper
 const server = setupServer(
   rest.get('/api/records', (req, res, ctx) => {
-    return res(ctx.json(sampleRecords));
+    return res(ctx.json(sampleOperationRecords));
   })
 );
 
