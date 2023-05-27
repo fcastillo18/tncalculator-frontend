@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Login from './pages/Login/Login';
 import CreateOperation from './pages/Operations/CreateOperation';
 import OperationsRecords from './pages/Operations/OperationRecords';
+import SignIn from './components/SignIn/SignIn';
 
 export function App() {
   return (
@@ -14,6 +15,8 @@ export function App() {
       <Route path="/user" element={<UserPage />} />
       <Route path="/operation/create" element={<CreateOperation />} />
       <Route path="/operation/listAll" element={<OperationsRecords />} />
+      {/* TODO we will need a redirect or something to handle this  */}
+      <Route path="/sigin" element={<SignIn />} />
       <Route path="/" element={<Dashboard />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
