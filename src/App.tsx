@@ -6,6 +6,7 @@ import Login from './pages/Login/Login';
 import CreateOperation from './pages/Operations/CreateOperation';
 import OperationsRecords from './pages/Operations/OperationRecords';
 import SignIn from './components/SignIn/SignIn';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export function App() {
   return (
@@ -23,10 +24,15 @@ export function App() {
   );
 }
 
+// Create a client
+const queryClient = new QueryClient();
+
 export function WrappedApp() {
   return (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
