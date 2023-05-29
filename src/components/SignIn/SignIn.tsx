@@ -12,8 +12,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { signin } from '../../api/api';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Divider } from '@mui/material';
+import { useEffect } from 'react';
 
 // Based on: https://mui.com/material-ui/getting-started/templates/
 // Source: https://github.com/mui/material-ui/tree/v5.13.2/docs/data/material/getting-started/templates/sign-in
@@ -41,8 +42,25 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [error, setError] = React.useState<string | null>(null);
+  const [from, setFrom] = React.useState<string | null>(null); // to navigate back to previous page
+
+  useEffect(() => {
+    if (location.state) {
+      // const { from } = location.state as { from: { pathname: string } };
+      const { from, error } = location.state;
+      if (error && error.code === 401) {
+        setFrom(from);
+        setError(
+          'Session expired or you tried access a unauthorized route. Please sign in again.'
+        );
+        // navigated back to previous page
+        // navigate(from);
+      }
+    }
+  }, []);
 
   const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
     setError('');
@@ -54,6 +72,11 @@ export default function SignIn() {
 
     try {
       const response = await signin(email, password);
+
+      if (from) {
+        // navigated back to previous page
+        navigate(from);
+      }
 
       // Redirect to the dashboard and send userData throw the state
       navigate('/dashboard', {
@@ -110,15 +133,16 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-              onKeyDown={(event) => {
-                // Check if the ENTER key was pressed
-                if (event.key === 'Enter') {
-                  // Prevent the default action
-                  event.preventDefault();
-                  // Call the handleSubmit function
-                  handleSubmit();
-                }
-              }}
+              // TODO I need to implement states for the inputs, in order to use this and getting the data inside the function without the need of passing form data
+              // onKeyDown={(event) => {
+              //   // Check if the ENTER key was pressed
+              //   if (event.key === 'Enter') {
+              //     // Prevent the default action
+              //     event.preventDefault();
+              //     // Call the handleSubmit function
+              //     handleSubmit();
+              //   }
+              // }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
