@@ -6,12 +6,13 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { signin } from '../../api/api';
+import { useNavigate } from 'react-router-dom';
 
 // Based on: https://mui.com/material-ui/getting-started/templates/
 // Source: https://github.com/mui/material-ui/tree/v5.13.2/docs/data/material/getting-started/templates/sign-in
@@ -38,13 +39,25 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+    const data = new FormData(event?.currentTarget);
+
+    const email = data.get('email') as string;
+    const password = data.get('password') as string;
+
+    try {
+      const response = await signin(email, password);
+      console.log(response); //remove this line once you confirm it works
+
+      // Redirect to the dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error signing in:', error);
+      // Handle error, display a message to the user
+    }
   };
 
   return (
@@ -90,6 +103,15 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onKeyDown={(event) => {
+                // Check if the ENTER key was pressed
+                if (event.key === 'Enter') {
+                  // Prevent the default action
+                  event.preventDefault();
+                  // Call the handleSubmit function
+                  handleSubmit();
+                }
+              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
