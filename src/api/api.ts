@@ -8,6 +8,8 @@ const api = axios.create({
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = sessionStorage.getItem('jwtToken');
+    console.log('interceptors');
+    console.log('token: ', token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,7 +29,7 @@ export const signin = async (
   const token = response.data.token;
   const expirationTime = Date.now() / 1000 + 3600; // calculate the expiration time
 
-  sessionStorage.setItem('token', token);
+  sessionStorage.setItem('jwtToken', token);
   sessionStorage.setItem('expirationTime', expirationTime.toString());
   return response.data;
 };
@@ -39,6 +41,10 @@ export const getToken = (): string | null => {
 
 export const fetchAllOperationRecords = async () => {
   return api.get('/record/all').then((res) => res.data);
+};
+
+export const fetchAllUserRecords = async () => {
+  return api.get('/user/all').then((res) => res.data);
 };
 
 export default api;

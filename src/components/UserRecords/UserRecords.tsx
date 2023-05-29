@@ -1,11 +1,18 @@
 import { useState, useEffect } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Role, User } from '../../types/UserTypes';
-import { sampleUserRecords } from '../../mocks/mocks';
+import { useQuery } from '@tanstack/react-query';
+import { fetchAllUserRecords } from '../../api/api';
+import { useNavigate } from 'react-router-dom';
 
 const UserRecords: React.FC = () => {
-  // TODO remove sample data and replace with actual fetch
-  const [users, setUsers] = useState<User[]>(sampleUserRecords);
+  const [users, setUsers] = useState<User[]>([]);
+  const navigate = useNavigate();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['users'],
+    queryFn: fetchAllUserRecords,
+  });
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -24,17 +31,33 @@ const UserRecords: React.FC = () => {
   ];
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (!isLoading && data) {
+      const usersContent: User[] = data.content;
+      console.log('usersContent:', usersContent);
+      setUsers(usersContent);
+    }
+  }, [isLoading, data]);
 
-  const fetchUsers = async () => {
-    const response = await fetch('/api/users');
-    const data: User[] = await response.json();
-    // TODO implement actual fetch and remove sample data
-    setUsers(sampleUserRecords);
-  };
+  if (!isLoading && error) {
+    const errorContent = error as Error;
+    if (errorContent.message.includes('401')) {
+      navigate('/login', {
+        state: {
+          from: '/user',
+          error: {
+            code: 401,
+            message: 'Unauthorized, you need to signin',
+          },
+        },
+      });
+    }
+  }
 
-  return (
+  return isLoading ? ( // TODO refactor this and create components for loading and error
+    <h2>Loading...</h2>
+  ) : error ? (
+    <h2>{`An error occurred: ${error}`}</h2>
+  ) : (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
         rows={users}
