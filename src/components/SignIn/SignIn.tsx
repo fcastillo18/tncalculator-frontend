@@ -13,6 +13,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { signin } from '../../api/api';
 import { useNavigate } from 'react-router-dom';
+import { Divider } from '@mui/material';
 
 // Based on: https://mui.com/material-ui/getting-started/templates/
 // Source: https://github.com/mui/material-ui/tree/v5.13.2/docs/data/material/getting-started/templates/sign-in
@@ -25,9 +26,9 @@ function Copyright(props: any) {
       align="center"
       {...props}
     >
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      {'Copyright ©FranklinCastillo '}
+      <Link color="inherit" href="https://about.me/fcastillo18/">
+        about.me
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -41,7 +42,10 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
 
+  const [error, setError] = React.useState<string | null>(null);
+
   const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    setError('');
     event?.preventDefault();
     const data = new FormData(event?.currentTarget);
 
@@ -50,13 +54,16 @@ export default function SignIn() {
 
     try {
       const response = await signin(email, password);
-      console.log(response); //remove this line once you confirm it works
 
-      // Redirect to the dashboard
-      navigate('/dashboard');
+      // Redirect to the dashboard and send userData throw the state
+      navigate('/dashboard', {
+        state: {
+          user: response.user,
+        },
+      });
     } catch (error) {
       console.error('Error signing in:', error);
-      // Handle error, display a message to the user
+      setError('Incorrect username or password, please try again.');
     }
   };
 
@@ -125,6 +132,11 @@ export default function SignIn() {
             >
               Sign In
             </Button>
+
+            <Divider sx={{ my: 2 }} />
+            <Typography color="error" align="center">
+              {error}
+            </Typography>
             {/* TODO SigUp is not yet being considerate, might be implemented later. We have CreatedUser for that */}
             {/* <Grid container>
               <Grid item xs>
