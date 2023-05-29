@@ -21,7 +21,11 @@ import {
 } from '../../types/RecordTypes';
 import { sampleOperationResult } from '../../mocks/mocks';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createOperation, fetchAllOperations } from '../../api/api';
+import {
+  createOperation,
+  fetchAllOperations,
+  generateRandomString,
+} from '../../api/api';
 import { capitalizeString } from '../../utils/Utils';
 
 const CreateOperation: React.FC = () => {
@@ -38,6 +42,7 @@ const CreateOperation: React.FC = () => {
     OperationType.ADDITION
   );
   const [showAlert, setShowAlert] = useState(false); // TODO change to false, after implementation
+  const [randomString, setRandomString] = useState<string | null>(null);
   const num1Ref = useRef<HTMLInputElement | null>(null);
   const num2Ref = useRef<HTMLInputElement | null>(null);
 
@@ -47,6 +52,22 @@ const CreateOperation: React.FC = () => {
     queryKey: ['operations'], // TODO refactor this and create constant
     queryFn: fetchAllOperations,
   });
+
+  const apiKey = '19bf67d3-2070-4520-bfc6-62699bca655d'; // TODO create this as a ENV variable
+
+  const {
+    data: randomStringData,
+    isLoading: randomStringIsLoading,
+    error: randomStringError,
+  } = useQuery<string[]>(['generateString', apiKey], () =>
+    generateRandomString(apiKey)
+  );
+
+  useEffect(() => {
+    if (!randomStringIsLoading && randomStringData) {
+      setRandomString(randomStringData[0]);
+    }
+  }, [randomStringIsLoading, randomStringData]);
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -170,7 +191,7 @@ const CreateOperation: React.FC = () => {
               <InputLabel htmlFor="num1">Random String</InputLabel>
               <OutlinedInput
                 id="num1"
-                value={'random string'} // TODO  replace with real random string
+                value={randomString}
                 onChange={handleNum1Change}
                 label="Number 1"
                 onKeyDown={handleNum1KeyDown}
