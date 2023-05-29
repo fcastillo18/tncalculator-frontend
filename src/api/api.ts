@@ -93,4 +93,35 @@ export const createOperation = async (
   return response.data;
 };
 
+export async function generateRandomString(
+  apiKey: string,
+  length = 10,
+  numberOfStrings = 1,
+  characters = 'abcdefghijklmnopqrstuvwxyz'
+) {
+  const response = await axios.post(
+    'https://api.random.org/json-rpc/4/invoke',
+    {
+      jsonrpc: '2.0',
+      method: 'generateStrings',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      params: {
+        apiKey,
+        n: numberOfStrings,
+        length: length,
+        characters: characters,
+      },
+      id: 42,
+    }
+  );
+
+  if (response.data.error) {
+    throw new Error(response.data.error.message);
+  }
+  // Access the data directly from the response
+  return response.data.result.random.data;
+}
+
 export default api;
