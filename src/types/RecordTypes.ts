@@ -25,7 +25,7 @@ export type Operation = {
   cost: number;
 };
 
-export interface OperationData {
+export interface OperationRequestData {
   userId: number;
   num1: number;
   num2: number;

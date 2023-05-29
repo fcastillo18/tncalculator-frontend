@@ -1,5 +1,10 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { SignInResponse } from './types';
+import {
+  OperationRequestData,
+  OperationResult,
+  OperationType,
+} from '../types/RecordTypes';
 
 const api = axios.create({
   baseURL: 'http://localhost:8080/api/v1',
@@ -8,8 +13,6 @@ const api = axios.create({
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = sessionStorage.getItem('jwtToken');
-    console.log('interceptors');
-    console.log('token: ', token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -45,6 +48,49 @@ export const fetchAllOperationRecords = async () => {
 
 export const fetchAllUserRecords = async () => {
   return api.get('/user/all').then((res) => res.data);
+};
+
+export const fetchAllOperations = async () => {
+  return api.get('/operation/all').then((res) => res.data);
+};
+
+export const createOperation = async (
+  operationType: OperationType,
+  operationRequestData: OperationRequestData
+): Promise<OperationResult> => {
+  let url;
+  switch (operationType) {
+    case OperationType.ADDITION:
+      url = '/operation/add';
+      break;
+    case OperationType.SUBTRACTION:
+      url = '/operation/subtract';
+      break;
+    case OperationType.MULTIPLICATION:
+      url = '/operation/multiply';
+      break;
+    case OperationType.DIVISION:
+      url = '/operation/divide';
+      break;
+    case OperationType.SQUARE_ROOT:
+      url = '/operation/squareRoot';
+      break;
+    case OperationType.RANDOM_STRING:
+      url = '/operation/randomString';
+      // This will be the only case that will return, cuz' the request is different from others.
+      return (
+        await api.post(url, {
+          userId: operationRequestData.userId,
+          randomString: operationRequestData.num1,
+        })
+      ).data;
+    default:
+      throw new Error('Invalid operation type');
+  }
+
+  console.log('operationRequestData: ', operationRequestData);
+  const response = await api.post<OperationResult>(url, operationRequestData);
+  return response.data;
 };
 
 export default api;
