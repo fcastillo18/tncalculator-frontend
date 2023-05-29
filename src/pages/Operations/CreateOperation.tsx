@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   FormControl,
@@ -13,12 +13,20 @@ import {
 } from '@mui/material';
 import ContainerLayout from '../../components/Layouts/ContainerLayout';
 import BodyLayout from '../../components/Layouts/BodyLayout';
-import { OperationData, OperationResult } from '../../types/RecordTypes';
+import {
+  Operation,
+  OperationRequestData,
+  OperationResult,
+  OperationType,
+} from '../../types/RecordTypes';
 import { sampleOperationResult } from '../../mocks/mocks';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createOperation, fetchAllOperations } from '../../api/api';
+import { capitalizeString } from '../../utils/Utils';
 
 const CreateOperation: React.FC = () => {
-  const [operationData, setOperationData] = useState<OperationData>({
-    userId: 2,
+  const [operationData, setOperationData] = useState<OperationRequestData>({
+    userId: 1,
     num1: 0,
     num2: 0,
   });
@@ -26,28 +34,71 @@ const CreateOperation: React.FC = () => {
   const [operationResult, setOperationResult] =
     useState<OperationResult | null>(sampleOperationResult);
 
-  const [operationType, setOperationType] = useState('Addition');
-  const [showAlert, setShowAlert] = useState(true); // TODO change to false, after implementation
+  const [operationType, setOperationType] = useState<OperationType>(
+    OperationType.ADDITION
+  );
+  const [showAlert, setShowAlert] = useState(false); // TODO change to false, after implementation
   const num1Ref = useRef<HTMLInputElement | null>(null);
   const num2Ref = useRef<HTMLInputElement | null>(null);
 
+  const [operations, setOperations] = useState<Operation[]>([]);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['operations'], // TODO refactor this and create constant
+    queryFn: fetchAllOperations,
+  });
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      const operations: Operation[] = data.content;
+      setOperations(operations);
+    }
+  }, [isLoading, data]);
+
   const handleOperationTypeChange = (
-    event: SelectChangeEvent<{ value: unknown }>
+    event: SelectChangeEvent<OperationType>
   ) => {
-    setOperationType(event.target.value as string);
+    setOperationType(event.target.value as OperationType);
+    setShowAlert(false);
   };
 
   const handleNum1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOperationData({ ...operationData, num1: Number(event.target.value) });
+    setShowAlert(false);
   };
 
   const handleNum2Change = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOperationData({ ...operationData, num2: Number(event.target.value) });
+    setShowAlert(false);
   };
 
+  const handleNum2KeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
+  const createOperationMutation = useMutation(
+    (operationData: OperationRequestData) =>
+      createOperation(operationType, operationData),
+    {
+      onError: (error) => {
+        console.error('Error creating operation:', error);
+      },
+      onSuccess: (data) => {
+        setOperationResult(data);
+        setShowAlert(true);
+        // Clear the input fields after the operation
+        setOperationData({ ...operationData, num1: 0, num2: 0 });
+      },
+    }
+  );
+
   const handleSubmit = () => {
-    // TODO: Call the API with operationData and operationType
-    // On response, call setOperationResult with the response data
+    createOperationMutation.mutate({
+      ...operationData,
+    });
+    setShowAlert(true);
   };
 
   const handleNum1KeyDown = (event: React.KeyboardEvent) => {
@@ -56,7 +107,15 @@ const CreateOperation: React.FC = () => {
     }
   };
 
-  return (
+  const shouldDisableInput =
+    operationType === OperationType.RANDOM_STRING ||
+    operationType === OperationType.SQUARE_ROOT;
+
+  return isLoading ? ( // TODO refactor this and create components for loading and error states
+    <h2>Loading...</h2>
+  ) : error ? (
+    <h2>{`An error occurred: ${error}`}</h2>
+  ) : (
     <ContainerLayout>
       <BodyLayout>
         <Typography variant="h4" gutterBottom sx={{ mt: 4, mb: 6 }}>
@@ -71,7 +130,8 @@ const CreateOperation: React.FC = () => {
           }}
         >
           <Typography variant="h6" gutterBottom>
-            User:{'Franklin Castillo '}
+            User: {'Franklin Castillo'}{' '}
+            {/**TODO replaced with real user name  */}
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
             Remaining Balance:{' $'}
@@ -83,43 +143,68 @@ const CreateOperation: React.FC = () => {
           <InputLabel id="operation-type-label">Operation</InputLabel>
           <Select
             data-testid="operation-type-id"
-            value={operationType as unknown as { value: unknown }}
+            value={operationType}
             onChange={handleOperationTypeChange}
             label="Operation Type"
           >
-            <MenuItem value={'Addition'}>Addition</MenuItem>
-            <MenuItem value={'Subtraction'}>Subtraction</MenuItem>
-            <MenuItem value={'Multiplication'}>Multiplication</MenuItem>
-            <MenuItem value={'Division'}>Division</MenuItem>
-            <MenuItem value={'Square Root'}>Square Root</MenuItem>
-            <MenuItem value={'Random String'}>Random String</MenuItem>
+            {operations
+              .sort((a, b) => a.type.localeCompare(b.type))
+              .map((operation, index) => {
+                return (
+                  <MenuItem value={operation.type} key={index}>
+                    {capitalizeString(operation.type)}
+                  </MenuItem>
+                );
+              })}
           </Select>
         </FormControl>
 
-        <Typography variant="subtitle1" gutterBottom sx={{ mb: 2 }}>
-          Operation Cost:{' '}
-          {operationResult ? operationResult.operationCost : 'N/A'}
+        <Typography variant="subtitle1" gutterBottom sx={{ mb: 3 }}>
+          Operation Cost:{' $'}
+          {operations.find((o) => o.type === operationType)?.cost ?? 'N/A'}
         </Typography>
 
         <FormControl variant="outlined" fullWidth margin="normal">
-          <InputLabel htmlFor="num1">Number 1</InputLabel>
-          <OutlinedInput
-            id="num1"
-            value={operationData.num1}
-            onChange={handleNum1Change}
-            label="Number 1"
-            onKeyDown={handleNum1KeyDown}
-            inputRef={num1Ref}
-          />
+          {operationType === OperationType.RANDOM_STRING ? (
+            <>
+              <InputLabel htmlFor="num1">Random String</InputLabel>
+              <OutlinedInput
+                id="num1"
+                value={'random string'} // TODO  replace with real random string
+                onChange={handleNum1Change}
+                label="Number 1"
+                onKeyDown={handleNum1KeyDown}
+                inputRef={num1Ref}
+              />
+            </>
+          ) : (
+            <>
+              <InputLabel htmlFor="num1">Number 1</InputLabel>
+              <OutlinedInput
+                id="num1"
+                value={operationData.num1}
+                onChange={handleNum1Change}
+                label="Number 1"
+                onKeyDown={handleNum1KeyDown}
+                inputRef={num1Ref}
+              />
+            </>
+          )}
         </FormControl>
 
-        <FormControl variant="outlined" fullWidth margin="normal">
+        <FormControl
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          disabled={shouldDisableInput}
+        >
           <InputLabel htmlFor="num2">Number 2</InputLabel>
 
           <OutlinedInput
             id="num2"
             value={operationData.num2}
             onChange={handleNum2Change}
+            onKeyDown={handleNum2KeyDown}
             label="Number 2"
             inputRef={num2Ref}
           />
@@ -133,9 +218,10 @@ const CreateOperation: React.FC = () => {
           <Alert
             severity="info"
             onClose={() => setShowAlert(false)}
-            sx={{ mt: 2 }}
+            sx={{ mt: 3 }}
           >
-            Operation Result: {operationResult.operationResult}
+            {capitalizeString(operationType)} result ={' '}
+            {operationResult.operationResult}
           </Alert>
         )}
       </BodyLayout>

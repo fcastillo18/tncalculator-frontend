@@ -38,7 +38,7 @@ const OperationsRecords: React.FC = () => {
   const [records, setRecords] = useState<Record[]>([]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['operations'], // TODO refactor this and create constant
+    queryKey: ['operationRecords'], // TODO refactor this and create constant
     queryFn: fetchAllOperationRecords,
   });
 
@@ -51,7 +51,7 @@ const OperationsRecords: React.FC = () => {
   }, [isLoading, data]);
 
   console.log('records:', records);
-  return isLoading ? ( // TODO refactor this and create components for loading and error
+  return isLoading ? ( // TODO refactor this and create components for loading and error states
     <h2>Loading...</h2>
   ) : error ? (
     <h2>{`An error occurred: ${error}`}</h2>
