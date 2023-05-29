@@ -5,6 +5,7 @@ import ContainerLayout from '../../components/Layouts/ContainerLayout';
 import { Typography } from '@mui/material';
 import { Record } from '../../types/RecordTypes';
 import { sampleOperationRecords } from '../../mocks/mocks';
+import { useQuery } from '@tanstack/react-query';
 
 async function fetchRecords(): Promise<Record[]> {
   // TODO Call  API and return the records.
@@ -23,6 +24,8 @@ const columns = [
 
 const OperationsRecords: React.FC = () => {
   const [records, setRecords] = useState<Record[]>([]);
+
+  // const {} = useQuery('operations', () => {});
 
   useEffect(() => {
     fetchRecords().then((data) => setRecords(data));
