@@ -6,8 +6,8 @@ export type Role = {
 export type User = {
   id: number;
   username: string;
-  password: string;
-  status?: string;
+  password?: string;
+  status: string;
   balance?: number;
   email: string;
   roles: Role[];

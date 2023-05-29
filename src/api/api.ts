@@ -37,4 +37,8 @@ export const getToken = (): string | null => {
   return sessionStorage.getItem('jwtToken');
 };
 
+export const fetchAllOperationRecords = async () => {
+  return api.get('/record/all').then((res) => res.data);
+};
+
 export default api;
