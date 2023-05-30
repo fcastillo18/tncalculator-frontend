@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { ERole } from '../../types/Enums';
+import { ERole } from '../../types/Constants';
 
 const CreateUser: React.FC = () => {
   const [username, setUsername] = useState<string>('');
