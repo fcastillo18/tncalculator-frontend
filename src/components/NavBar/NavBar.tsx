@@ -13,6 +13,9 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import { Link } from 'react-router-dom';
+import { Tooltip } from '@mui/material';
+import { stringAvatar } from '../../utils/Utils';
+import { JWT_TOKEN_NAME } from '../../types/Constants';
 
 const navLinks = [
   { name: 'Dashboard', path: '/dashboard' },
@@ -24,7 +27,9 @@ const operationLinks = [
   { name: 'List operations record', path: '/operation/listAll' },
 ];
 
-function ResponsiveAppBar() {
+const settings = [{ name: 'Profile' }, { name: 'Logout', path: '/logout' }];
+
+const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -52,6 +57,13 @@ function ResponsiveAppBar() {
   };
   const handleCloseOperationMenu = () => {
     setOperationAnchorEl(null);
+  };
+
+  const handleOptionClick = (optionName: string, path: string) => {
+    if (path === '/logout') {
+      localStorage.removeItem(JWT_TOKEN_NAME);
+      window.location.href = '/login';
+    }
   };
 
   return (
@@ -230,14 +242,47 @@ function ResponsiveAppBar() {
             </Menu>
           </Box>
 
+          {/* TODO use real User data here */}
           <Box sx={{ flexGrow: 0 }}>
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-            </IconButton>
+            <Tooltip title="Franklin Castillo">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar {...stringAvatar('Franklin Castillo')} />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((option) => (
+                <Button
+                  key={option.name}
+                  component={Link}
+                  to={''}
+                  onClick={() => {
+                    handleOptionClick(option.name, option.path ?? '');
+                  }}
+                  sx={{ display: 'block' }}
+                >
+                  {option.name}
+                </Button>
+              ))}
+            </Menu>
           </Box>
         </Toolbar>
       </Container>
     </AppBar>
   );
-}
+};
 export default ResponsiveAppBar;
