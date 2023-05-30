@@ -67,7 +67,7 @@ const CreateOperation: React.FC = () => {
     if (!randomStringIsLoading && randomStringData) {
       setRandomString(randomStringData[0]);
     }
-  }, [randomStringIsLoading, randomStringData]);
+  }, [randomStringIsLoading]);
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -145,16 +145,15 @@ const CreateOperation: React.FC = () => {
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: 'column',
             pr: 2,
-            justifyContent: 'space-between',
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            User: {'Franklin Castillo'}{' '}
-            {/**TODO replaced with real user name  */}
-          </Typography>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ textAlign: 'right' }}
+          >
             Remaining Balance:{' $'}
             {operationResult ? operationResult.userRemainingBalance : 'N/A'}
           </Typography>
