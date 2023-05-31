@@ -15,6 +15,7 @@ import { signin } from '../../api/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Divider } from '@mui/material';
 import { useEffect } from 'react';
+import { AuthContext } from '../../auth/AuthContext';
 
 // Based on: https://mui.com/material-ui/getting-started/templates/
 // Source: https://github.com/mui/material-ui/tree/v5.13.2/docs/data/material/getting-started/templates/sign-in
@@ -43,6 +44,7 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { setIsUserLoggedIn } = React.useContext(AuthContext);
 
   const [error, setError] = React.useState<string | null>(null);
   const [from, setFrom] = React.useState<string | null>(null); // to navigate back to previous page
@@ -72,6 +74,7 @@ export default function SignIn() {
 
     try {
       const response = await signin(email, password);
+      setIsUserLoggedIn(true);
 
       if (from) {
         // navigated back to previous page

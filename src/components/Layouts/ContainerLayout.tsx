@@ -1,9 +1,10 @@
-import { Box, Container, Grid } from '@mui/material';
+import { Container } from '@mui/material';
 import { ReactNode, FC } from 'react';
 import Navbar from '../NavBar/NavBar';
 
 interface BodyContainerProps {
   children: ReactNode;
+  isNavbarEnabled?: boolean;
 }
 
 const containerStyles = {
@@ -15,10 +16,13 @@ const containerStyles = {
   minHeight: '100vh',
 };
 
-const ContainerLayout: FC<BodyContainerProps> = ({ children }) => {
+const ContainerLayout: FC<BodyContainerProps> = ({
+  children,
+  isNavbarEnabled = true,
+}) => {
   return (
     <>
-      <Navbar />
+      {isNavbarEnabled && <Navbar />}
       <Container maxWidth="lg" sx={containerStyles}>
         {children}
       </Container>

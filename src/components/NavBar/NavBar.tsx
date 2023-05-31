@@ -16,6 +16,8 @@ import { Link } from 'react-router-dom';
 import { Tooltip } from '@mui/material';
 import { stringAvatar } from '../../utils/Utils';
 import { JWT_TOKEN_NAME } from '../../types/Constants';
+import { AuthContext } from '../../auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const navLinks = [
   { name: 'Dashboard', path: '/dashboard' },
@@ -59,10 +61,15 @@ const ResponsiveAppBar = () => {
     setOperationAnchorEl(null);
   };
 
+  const { setIsUserLoggedIn } = React.useContext(AuthContext);
+  const navigate = useNavigate();
+
   const handleOptionClick = (optionName: string, path: string) => {
     if (path === '/logout') {
+      console.log('logging out');
       localStorage.removeItem(JWT_TOKEN_NAME);
-      window.location.href = '/login';
+      setIsUserLoggedIn(false);
+      navigate('/login');
     }
   };
 
@@ -75,7 +82,7 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            // href="/dashboard"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },

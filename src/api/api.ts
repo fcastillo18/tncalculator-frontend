@@ -5,7 +5,7 @@ import {
   OperationResult,
   OperationType,
 } from '../types/RecordTypes';
-import { JWT_TOKEN_NAME } from '../types/Constants';
+import { EXPIRATION_TIME_NAME, JWT_TOKEN_NAME } from '../types/Constants';
 
 const api = axios.create({
   baseURL: 'http://localhost:8080/api/v1',
@@ -13,7 +13,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = sessionStorage.getItem(JWT_TOKEN_NAME);
+    const token = localStorage.getItem(JWT_TOKEN_NAME);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -33,14 +33,14 @@ export const signin = async (
   const token = response.data.token;
   const expirationTime = Date.now() / 1000 + 3600; // calculate the expiration time
 
-  sessionStorage.setItem(JWT_TOKEN_NAME, token);
-  sessionStorage.setItem('expirationTime', expirationTime.toString());
+  localStorage.setItem(JWT_TOKEN_NAME, token);
+  localStorage.setItem(EXPIRATION_TIME_NAME, expirationTime.toString());
   return response.data;
 };
 
 // TODO validate the Token expiration time before calling any endpoint
 export const getToken = (): string | null => {
-  return sessionStorage.getItem(JWT_TOKEN_NAME);
+  return localStorage.getItem(JWT_TOKEN_NAME);
 };
 
 export const fetchAllOperationRecords = async () => {
