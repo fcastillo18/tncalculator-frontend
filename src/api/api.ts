@@ -6,6 +6,7 @@ import {
   OperationType,
 } from '../types/RecordTypes';
 import { EXPIRATION_TIME_NAME, JWT_TOKEN_NAME } from '../types/Constants';
+import { SignupRequest } from '../types/UserTypes';
 
 const api = axios.create({
   baseURL: 'http://localhost:8080/api/v1',
@@ -124,5 +125,10 @@ export async function generateRandomString(
   // Access the data directly from the response
   return response.data.result.random.data;
 }
+
+export const signup = async (userData: SignupRequest) => {
+  const response = await api.post('/auth/signup', userData);
+  return response.data;
+};
 
 export default api;

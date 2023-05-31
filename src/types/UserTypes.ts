@@ -1,5 +1,4 @@
 export type Role = {
-  id: number;
   name: string;
 };
 
@@ -14,3 +13,11 @@ export type User = {
   date?: string; // Using a string for simplicity; consider using a Date for real date handling
   isDeleted?: boolean;
 };
+
+export interface SignupRequest {
+  username: string;
+  email: string;
+  role: string[];
+  balance?: number;
+  password: string;
+}
