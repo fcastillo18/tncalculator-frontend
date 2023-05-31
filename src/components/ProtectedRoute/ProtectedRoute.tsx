@@ -10,22 +10,21 @@ interface ProtectedProps {
   isSignedIn: boolean;
   children: ReactNode;
   path: string;
-  requiredRole?: ERole;
+  isAdmin?: boolean;
 }
 
 const Protected: React.FC<ProtectedProps> = ({
   isSignedIn,
   children,
   path,
-  requiredRole,
+  isAdmin = false,
 }) => {
   let navigateTo = '/';
-  const userRole = ERole.ADMIN;
   // evaluate different routes to change the redirect path
   if (isSignedIn) {
-    if (requiredRole === ERole.ADMIN) {
+    if (isAdmin) {
       // Only allow access to users with the "ADMIN" role
-      if (path.includes('/user') && userRole === ERole.ADMIN) {
+      if (path.includes('/user')) {
         navigateTo = '/not-found';
       } else {
         navigateTo = '/'; // Redirect to a different path if the user doesn't have the required role

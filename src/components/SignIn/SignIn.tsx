@@ -44,7 +44,8 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setIsUserLoggedIn } = React.useContext(AuthContext);
+  const { setIsUserLoggedIn, setSignedInUser: setUser } =
+    React.useContext(AuthContext);
 
   const [error, setError] = React.useState<string | null>(null);
   const [from, setFrom] = React.useState<string | null>(null); // to navigate back to previous page
@@ -74,7 +75,11 @@ export default function SignIn() {
 
     try {
       const response = await signin(email, password);
+      const user = response.user;
+
+      console.log('user:', user);
       setIsUserLoggedIn(true);
+      setUser(user);
 
       if (from) {
         // navigated back to previous page
@@ -84,7 +89,7 @@ export default function SignIn() {
       // Redirect to the dashboard and send userData throw the state
       navigate('/dashboard', {
         state: {
-          user: response.user,
+          user: user,
         },
       });
     } catch (error) {

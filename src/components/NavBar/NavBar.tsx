@@ -61,7 +61,7 @@ const ResponsiveAppBar = () => {
     setOperationAnchorEl(null);
   };
 
-  const { setIsUserLoggedIn } = React.useContext(AuthContext);
+  const { setIsUserLoggedIn, signedInUser } = React.useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleOptionClick = (optionName: string, path: string) => {
@@ -249,11 +249,12 @@ const ResponsiveAppBar = () => {
             </Menu>
           </Box>
 
-          {/* TODO use real User data here */}
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Franklin Castillo">
+            <Tooltip title={signedInUser?.username}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar {...stringAvatar('Franklin Castillo')} />
+                <Avatar
+                  {...stringAvatar(signedInUser?.username ?? 'Default')}
+                />
               </IconButton>
             </Tooltip>
             <Menu
