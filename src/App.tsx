@@ -13,8 +13,9 @@ import { AuthContext, AuthProvider } from './auth/AuthContext';
 import React from 'react';
 
 export function App() {
-  const { isUserLoggedIn } = React.useContext(AuthContext);
-  console.log('isUserLoggedIn:', isUserLoggedIn);
+  const { isUserLoggedIn, signedInUser } = React.useContext(AuthContext);
+  const userRoles = signedInUser?.roles;
+  const isAdmin = userRoles?.some((role) => role.name === ERole.ADMIN);
 
   return (
     <Routes>
@@ -31,11 +32,7 @@ export function App() {
       <Route
         path="/user"
         element={
-          <Protected
-            isSignedIn={isUserLoggedIn}
-            path="/user"
-            requiredRole={ERole.ADMIN} // TODO replace with sign in user role when working ISSUE-43
-          >
+          <Protected isSignedIn={isUserLoggedIn} path="/user" isAdmin={isAdmin}>
             <UserPage />
           </Protected>
         }

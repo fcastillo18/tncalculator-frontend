@@ -4,25 +4,32 @@ import React, {
   useEffect,
   PropsWithChildren,
 } from 'react';
-import { JWT_TOKEN_NAME } from '../types/Constants';
 import { isUserSessionActive } from './auth';
+import { User } from '../types/UserTypes';
 
-interface AuthContextProps {
+type AuthContextType = {
   isUserLoggedIn: boolean;
-  setIsUserLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-}
+  setIsUserLoggedIn: (isLoggedIn: boolean) => void;
+  signedInUser: User | null;
+  setSignedInUser: (user: User | null) => void;
+};
 
-const initialAuthContext: AuthContextProps = {
+const initialAuthContext: AuthContextType = {
   isUserLoggedIn: false,
   setIsUserLoggedIn: () => {
     false;
   },
+  signedInUser: null,
+  setSignedInUser: () => {
+    null;
+  },
 };
 
-export const AuthContext = createContext<AuthContextProps>(initialAuthContext);
+export const AuthContext = createContext<AuthContextType>(initialAuthContext);
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     // Get the login state from local storage
@@ -31,9 +38,11 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   }, []);
 
-  const authContextValue: AuthContextProps = {
+  const authContextValue: AuthContextType = {
     isUserLoggedIn,
     setIsUserLoggedIn,
+    signedInUser: user,
+    setSignedInUser: setUser,
   };
 
   return (
