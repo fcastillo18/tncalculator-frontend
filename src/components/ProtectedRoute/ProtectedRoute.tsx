@@ -22,16 +22,9 @@ const Protected: React.FC<ProtectedProps> = ({
   let navigateTo = '/';
   // evaluate different routes to change the redirect path
   if (isSignedIn) {
-    if (isAdmin) {
+    if (!isAdmin && path.includes('/user')) {
       // Only allow access to users with the "ADMIN" role
-      if (path.includes('/user')) {
-        navigateTo = '/not-found';
-      } else {
-        navigateTo = '/'; // Redirect to a different path if the user doesn't have the required role
-      }
-    } else {
-      // No specific role required, allow access to all signed-in users
-      navigateTo = '/dashboard';
+      navigateTo = '/not-found';
     }
   }
 
