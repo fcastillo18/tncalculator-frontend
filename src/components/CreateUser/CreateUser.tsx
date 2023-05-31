@@ -8,16 +8,20 @@ import {
   SelectChangeEvent,
   Grid,
   Typography,
+  Alert,
 } from '@mui/material';
 import { useState } from 'react';
 import { ERole } from '../../types/Constants';
+import { signup } from '../../api/api';
+import { SignupRequest } from '../../types/UserTypes';
 
 const CreateUser: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [balance, setBalance] = useState<number>(0);
-  const [role, setRole] = useState<ERole>(ERole.USER);
+  const [role, setRole] = useState<ERole>(ERole.ADMIN);
+  const [alertMessage, setAlertMessage] = useState<string>('');
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -42,23 +46,20 @@ const CreateUser: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const response = await fetch('/api/user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-        balance,
-        role,
-      }),
-    });
+    const createUserRequest: SignupRequest = {
+      username,
+      email,
+      password,
+      role: [role],
+      balance,
+    };
 
-    const data = await response.json();
-
-    alert(`User created with ID: ${data.id}`);
+    try {
+      const response = await signup(createUserRequest);
+      setAlertMessage(response.message);
+    } catch (error) {
+      setAlertMessage('Error creating user.');
+    }
   };
 
   return (
@@ -120,6 +121,15 @@ const CreateUser: React.FC = () => {
           </Button>
         </Grid>
       </Grid>
+      {alertMessage && (
+        <Alert
+          severity="success"
+          onClose={() => setAlertMessage('')}
+          sx={{ mt: 4 }}
+        >
+          {alertMessage}
+        </Alert>
+      )}
     </form>
   );
 };
