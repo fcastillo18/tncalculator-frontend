@@ -9,5 +9,5 @@ phases:
       - npm run build
   post_build:
     commands:
-      - aws s3 cp --resources ./build s3://www.tncalculator.io/
-      - aws cloudfront create-invalidation --distribution-id E1D8LIQW9NZNJX --path /\*
+      - aws s3 cp ./build s3://www.tncalculator.io/ --recursive
+      - aws cloudfront create-invalidation --distribution-id E1D8LIQW9NZNJX --paths "/*"
