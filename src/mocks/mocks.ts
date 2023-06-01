@@ -26,7 +26,7 @@ export const sampleOperationRecords: Record[] = [
       balance: 100,
       status: 'ACTIVE',
       isDeleted: false,
-      roles: [{ id: 1, name: 'admin' }],
+      roles: [{ name: 'admin' }],
     },
     amount: 50,
     operationResponse: 'SUCCESS',
@@ -47,7 +47,7 @@ export const sampleOperationRecords: Record[] = [
       balance: 80,
       status: 'ACTIVE',
       isDeleted: false,
-      roles: [{ id: 1, name: 'user' }],
+      roles: [{ name: 'user' }],
     },
     amount: 30,
     operationResponse: 'SUCCESS',
@@ -68,7 +68,7 @@ export const sampleOperationRecords: Record[] = [
       balance: 350,
       status: 'ACTIVE',
       isDeleted: false,
-      roles: [{ id: 1, name: 'admin' }],
+      roles: [{ name: 'admin' }],
     },
     amount: 30,
     operationResponse: 'SUCCESS',
@@ -77,8 +77,8 @@ export const sampleOperationRecords: Record[] = [
   },
 ];
 
-const adminRoleSample: Role[] = [{ id: 1, name: 'admin' }];
-const userRoleSample: Role[] = [{ id: 2, name: 'user' }];
+const adminRoleSample: Role[] = [{ name: 'admin' }];
+const userRoleSample: Role[] = [{ name: 'user' }];
 
 export const sampleUserRecords: User[] = [
   {

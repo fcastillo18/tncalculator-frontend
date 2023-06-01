@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - npm install
+  build:
+    commands:
+      - npm run build
+  post_build:
+    commands:
+      - aws s3 cp --resources ./build s3://www.tncalculator.io/
+      - aws cloudfront create-invalidation --distribution-id E1D8LIQW9NZNJX --path /\*

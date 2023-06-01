@@ -8,8 +8,9 @@ import {
 import { EXPIRATION_TIME_NAME, JWT_TOKEN_NAME } from '../types/Constants';
 import { SignupRequest } from '../types/UserTypes';
 
+// TODO introduce some environment variables for this.
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: 'http://ec2-100-24-32-210.compute-1.amazonaws.com/api/v1',
 });
 
 api.interceptors.request.use(
