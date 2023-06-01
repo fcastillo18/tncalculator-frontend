@@ -10,7 +10,7 @@ import { SignupRequest } from '../types/UserTypes';
 
 // TODO introduce some environment variables for this.
 const api = axios.create({
-  baseURL: 'http://ec2-100-24-32-210.compute-1.amazonaws.com/api/v1',
+  baseURL: process.env.REACT_APP_API_BASE_URL,
 });
 
 api.interceptors.request.use(
