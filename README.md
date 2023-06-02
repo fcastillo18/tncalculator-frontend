@@ -15,6 +15,14 @@ This setup includes:
 
 - You can follow this [link](http://www.tncalculator.io.s3-website-us-east-1.amazonaws.com/) for the live version served from AWS.
 
+To hosted this wep-app we used:
+
+- AWS S3 buckets, storage and deploy the app to the web
+- AWS Codepipeline, build and deploy resources to the S3
+- AWS CloudFront, managing CDN invalidations
+- AWS System Manager, storage env variables.
+- Some others.
+
 ## Running the app
 
 This app app depends of this [tncalculator-api](https://github.com/fcastillo18/tncalculator-api)
