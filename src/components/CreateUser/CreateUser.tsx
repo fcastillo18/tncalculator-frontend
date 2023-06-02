@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { ERole } from '../../types/Constants';
 import { signup } from '../../api/api';
 import { SignupRequest } from '../../types/UserTypes';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const CreateUser: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -22,6 +23,7 @@ const CreateUser: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
   const [role, setRole] = useState<ERole>(ERole.ADMIN);
   const [alertMessage, setAlertMessage] = useState<string>('');
+  const queryClient = useQueryClient();
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -43,6 +45,12 @@ const CreateUser: React.FC = () => {
     setRole(event.target.value as ERole);
   };
 
+  const mutation = useMutation(signup, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']); // Invalidate the 'users' query to trigger a refresh
+    },
+  });
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -55,8 +63,8 @@ const CreateUser: React.FC = () => {
     };
 
     try {
-      const response = await signup(createUserRequest);
-      setAlertMessage(response.message);
+      await mutation.mutateAsync(createUserRequest); // Call the mutation function with the request data
+      setAlertMessage('User created successfully');
     } catch (error) {
       setAlertMessage('Error creating user.');
     }
