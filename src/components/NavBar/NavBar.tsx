@@ -66,7 +66,6 @@ const ResponsiveAppBar = () => {
 
   const handleOptionClick = (optionName: string, path: string) => {
     if (path === '/logout') {
-      console.log('logging out');
       localStorage.removeItem(JWT_TOKEN_NAME);
       setIsUserLoggedIn(false);
       navigate('/login');

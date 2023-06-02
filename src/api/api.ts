@@ -15,8 +15,6 @@ const api = axios.create({
     'http://ec2-3-89-20-5.compute-1.amazonaws.com/api/v1',
 });
 
-console.log('API base URL:', process.env.REACT_APP_API_BASE_URL);
-
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem(JWT_TOKEN_NAME);
@@ -95,7 +93,6 @@ export const createOperation = async (
       throw new Error('Invalid operation type');
   }
 
-  console.log('operationRequestData: ', operationRequestData);
   const response = await api.post<OperationResult>(url, operationRequestData);
   return response.data;
 };

@@ -30,8 +30,11 @@ import { capitalizeString } from '../../utils/Utils';
 import { AuthContext } from '../../auth/AuthContext';
 
 const CreateOperation: React.FC = () => {
+  const { signedInUser } = useContext(AuthContext);
+
   const [operationData, setOperationData] = useState<OperationRequestData>({
-    userId: 1,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    userId: signedInUser!.id,
     num1: 0,
     num2: 0,
   });
@@ -54,16 +57,19 @@ const CreateOperation: React.FC = () => {
     queryFn: fetchAllOperations,
   });
 
-  const { signedInUser } = useContext(AuthContext);
-
   const apiKey = '19bf67d3-2070-4520-bfc6-62699bca655d'; // TODO create this as a ENV variable
+  const shouldExecuteQuery = operationType === OperationType.RANDOM_STRING;
 
   const {
     data: randomStringData,
     isLoading: randomStringIsLoading,
     error: randomStringError,
-  } = useQuery<string[]>(['generateString', apiKey], () =>
-    generateRandomString(apiKey)
+  } = useQuery<string[]>(
+    ['generateString', apiKey],
+    () => generateRandomString(apiKey),
+    {
+      enabled: shouldExecuteQuery, // Set this variable to skip the call for other types.
+    }
   );
 
   useEffect(() => {

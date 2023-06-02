@@ -33,7 +33,6 @@ const UserRecords: React.FC = () => {
   useEffect(() => {
     if (!isLoading && data) {
       const usersContent: User[] = data.content;
-      console.log('usersContent:', usersContent);
       setUsers(usersContent);
     }
   }, [isLoading, data]);

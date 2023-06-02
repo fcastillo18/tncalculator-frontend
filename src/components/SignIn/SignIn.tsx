@@ -77,7 +77,6 @@ export default function SignIn() {
       const response = await signin(email, password);
       const user = response.user;
 
-      console.log('user:', user);
       setIsUserLoggedIn(true);
       setUser(user);
 
