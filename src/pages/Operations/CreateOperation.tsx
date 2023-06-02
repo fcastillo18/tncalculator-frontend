@@ -164,7 +164,7 @@ const CreateOperation: React.FC = () => {
             sx={{ textAlign: 'right' }}
           >
             Remaining Balance:{' $'}
-            {signedInUser?.balance ?? 'N/A'}
+            {operationResult?.userRemainingBalance ?? 'N/A'}
           </Typography>
         </Box>
 
