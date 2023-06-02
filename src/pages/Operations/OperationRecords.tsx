@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import ContainerLayout from '../../components/Layouts/ContainerLayout';
 import { Button, Typography } from '@mui/material';
 import { Operation, Record } from '../../types/RecordTypes';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteOperationRecord, fetchAllOperationRecords } from '../../api/api';
 import { User } from '../../types/UserTypes';
 
@@ -36,9 +36,16 @@ const columns: GridColDef[] = [
     headerName: 'Action',
     width: 120,
     renderCell: (params) => {
-      const handleDelete = () => {
+      const queryClient = useQueryClient(); // Access queryClient here
+      const mutation = useMutation(deleteOperationRecord, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(['operationRecords']); // Invalidate the query to trigger a refresh
+        },
+      });
+
+      const handleDelete = async () => {
         const recordId = params.row.id;
-        deleteOperationRecord(recordId);
+        await mutation.mutateAsync(recordId);
       };
 
       return (
@@ -64,9 +71,10 @@ const OperationsRecords: React.FC = () => {
       const filteredRecords = recordsContent.filter(
         (record) => record.deleted !== true
       ); // excluding soft-delete records
+      // const sortedRecords = filteredRecords.sort((a, b) => a.id - b.id); // Sort the records by id in ascending order let's keep it descending order
       setRecords(filteredRecords);
     }
-  }, [isLoading, data]);
+  }, [isLoading, data, records]);
 
   return isLoading ? ( // TODO refactor this and create components for loading and error states
     <h2>Loading...</h2>
