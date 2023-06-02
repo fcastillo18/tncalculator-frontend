@@ -2,10 +2,10 @@ import * as React from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import ContainerLayout from '../../components/Layouts/ContainerLayout';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { Operation, Record } from '../../types/RecordTypes';
 import { useQuery } from '@tanstack/react-query';
-import { fetchAllOperationRecords } from '../../api/api';
+import { deleteOperationRecord, fetchAllOperationRecords } from '../../api/api';
 import { User } from '../../types/UserTypes';
 
 const columns: GridColDef[] = [
@@ -31,7 +31,23 @@ const columns: GridColDef[] = [
   { field: 'amount', headerName: 'Amount', type: 'number', width: 110 },
   { field: 'date', headerName: 'Date', type: 'string', width: 200 },
   { field: 'operationResponse', headerName: 'Operation Response', width: 200 },
-  { field: 'deleted', headerName: 'Is Deleted', type: 'string', width: 130 },
+  {
+    field: 'delete',
+    headerName: 'Action',
+    width: 120,
+    renderCell: (params) => {
+      const handleDelete = () => {
+        const recordId = params.row.id;
+        deleteOperationRecord(recordId);
+      };
+
+      return (
+        <Button variant="outlined" color="error" onClick={handleDelete}>
+          Delete
+        </Button>
+      );
+    },
+  },
 ];
 
 const OperationsRecords: React.FC = () => {
@@ -45,7 +61,10 @@ const OperationsRecords: React.FC = () => {
   useEffect(() => {
     if (!isLoading && data) {
       const recordsContent: Record[] = data.content;
-      setRecords(recordsContent);
+      const filteredRecords = recordsContent.filter(
+        (record) => record.deleted !== true
+      ); // excluding soft-delete records
+      setRecords(filteredRecords);
     }
   }, [isLoading, data]);
 
