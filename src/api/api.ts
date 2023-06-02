@@ -64,12 +64,16 @@ export const fetchAllUserRecords = async () => {
 
 export const getUserById = async (userId: number): Promise<User> => {
   const response = await api.get(`/user/getById?id=${userId}`);
-  console.log('getUserById:', response.data as User);
   return response.data as User;
 };
 
 export const fetchAllOperations = async () => {
   return api.get('/operation/all').then((res) => res.data);
+};
+
+export const deleteOperationRecord = async (id: number) => {
+  const response = await api.delete(`/record/delete/${id}`);
+  return response;
 };
 
 export const createOperation = async (
