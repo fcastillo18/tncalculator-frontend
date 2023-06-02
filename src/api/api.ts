@@ -5,15 +5,21 @@ import {
   OperationResult,
   OperationType,
 } from '../types/RecordTypes';
-import { EXPIRATION_TIME_NAME, JWT_TOKEN_NAME } from '../types/Constants';
-import { SignupRequest } from '../types/UserTypes';
+import {
+  EXPIRATION_TIME_NAME,
+  JWT_TOKEN_NAME,
+  SIGNED_USER,
+} from '../types/Constants';
+import { SignupRequest, User } from '../types/UserTypes';
 
-// TODO introduce some environment variables for this.
+const url =
+  import.meta.env.REACT_APP_API_BASE_URL || 'http://localhost:8080/api/v1';
+// 'http://ec2-3-89-20-5.compute-1.amazonaws.com/api/v1';
 const api = axios.create({
-  baseURL:
-    process.env.REACT_APP_API_BASE_URL ||
-    'http://ec2-3-89-20-5.compute-1.amazonaws.com/api/v1',
+  baseURL: url,
 });
+
+console.log('REACT_APP_API_BASE_URL: ', url);
 
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -39,6 +45,7 @@ export const signin = async (
 
   localStorage.setItem(JWT_TOKEN_NAME, token);
   localStorage.setItem(EXPIRATION_TIME_NAME, expirationTime.toString());
+  localStorage.setItem(SIGNED_USER, JSON.stringify(response.data.user));
   return response.data;
 };
 
@@ -53,6 +60,12 @@ export const fetchAllOperationRecords = async () => {
 
 export const fetchAllUserRecords = async () => {
   return api.get('/user/all').then((res) => res.data);
+};
+
+export const getUserById = async (userId: number): Promise<User> => {
+  const response = await api.get(`/user/getById?id=${userId}`);
+  console.log('getUserById:', response.data as User);
+  return response.data as User;
 };
 
 export const fetchAllOperations = async () => {

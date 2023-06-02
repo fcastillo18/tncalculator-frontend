@@ -14,6 +14,7 @@ import React from 'react';
 
 export function App() {
   const { isUserLoggedIn, signedInUser } = React.useContext(AuthContext);
+
   const userRoles = signedInUser?.roles;
   const isAdmin = userRoles?.some((role) => role.name === ERole.ADMIN);
 

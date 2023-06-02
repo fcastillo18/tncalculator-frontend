@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { isUserSessionActive } from './auth';
 import { User } from '../types/UserTypes';
-import { ERole } from '../types/Constants';
+import { ERole, SIGNED_USER } from '../types/Constants';
 
 type AuthContextType = {
   isUserLoggedIn: boolean;
@@ -40,6 +40,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     // Get the login state from local storage
     if (isUserSessionActive()) {
       setIsUserLoggedIn(true);
+      const userStorage = localStorage.getItem(SIGNED_USER);
+      if (userStorage !== null) {
+        setUser(JSON.parse(userStorage));
+      }
     }
   }, []);
 
