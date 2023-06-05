@@ -5,8 +5,12 @@ import ContainerLayout from '../../components/Layouts/ContainerLayout';
 import { Button, Typography } from '@mui/material';
 import { Operation, Record } from '../../types/RecordTypes';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteOperationRecord, fetchAllOperationRecords } from '../../api/api';
+import {
+  deleteOperationRecord,
+  fetchAllOperationsByUserId,
+} from '../../api/api';
 import { User } from '../../types/UserTypes';
+import { AuthContext } from '../../auth/AuthContext';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -59,10 +63,11 @@ const columns: GridColDef[] = [
 
 const OperationsRecords: React.FC = () => {
   const [records, setRecords] = useState<Record[]>([]);
+  const { signedInUser } = React.useContext(AuthContext);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['operationRecords'], // TODO refactor this and create constant
-    queryFn: fetchAllOperationRecords,
+    queryFn: () => fetchAllOperationsByUserId(signedInUser?.id || 0), // Replace with fetchAllOperationsByUserId
   });
 
   useEffect(() => {
