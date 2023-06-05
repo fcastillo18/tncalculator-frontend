@@ -40,7 +40,7 @@ const CreateOperation: React.FC = () => {
   });
 
   const [operationResult, setOperationResult] =
-    useState<OperationResult | null>(sampleOperationResult);
+    useState<OperationResult | null>(null);
 
   const [operationType, setOperationType] = useState<OperationType>(
     OperationType.ADDITION
@@ -164,7 +164,7 @@ const CreateOperation: React.FC = () => {
             sx={{ textAlign: 'right' }}
           >
             Remaining Balance:{' $'}
-            {operationResult?.userRemainingBalance ?? 'N/A'}
+            {signedInUser?.balance ?? 'N/A'}
           </Typography>
         </Box>
 
