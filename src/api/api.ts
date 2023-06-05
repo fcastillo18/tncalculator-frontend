@@ -76,6 +76,14 @@ export const deleteOperationRecord = async (id: number) => {
   return response;
 };
 
+export const fetchAllOperationsByUserId = async (userId: number) => {
+  const response = await api.get(`/record/all/${userId}`);
+  if (userId === 0) {
+    throw new Error('UserId cannot be 0');
+  }
+  return response.data;
+};
+
 export const createOperation = async (
   operationType: OperationType,
   operationRequestData: OperationRequestData
